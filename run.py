@@ -169,6 +169,6 @@ if __name__ == '__main__':
     """LOADING AN AGENT"""
     # environment, agent = load_agent(args)
     # """features"""
-    # features = get_features(environment, agent)
+    # features = find_features_layer(agent)
 
     print()

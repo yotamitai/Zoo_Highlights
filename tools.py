@@ -71,7 +71,7 @@ def create_video(path):
     writer.close()
 
 
-def find_features_layer(environment, agent):
+def find_features_layer(agent):
     agent_model_layers = agent.get_parameter_list()
     for layer in agent_model_layers:
         if layer.shape.ndims == 1:

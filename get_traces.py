@@ -19,7 +19,7 @@ def get_traces(args):
     shuffled_list = list(range(0, args.random_noop_range))
     random.shuffle(shuffled_list)
     environment, agent = load_agent(args)
-    features_layer = find_features_layer(environment, agent)
+    features_layer = find_features_layer(agent)
     random_noop = 0
     for i in range(args.num_traces):
         if args.random_noop_init:
