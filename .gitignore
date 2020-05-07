@@ -3,7 +3,7 @@
 *.zip
 .idea
 output/*
-rl_baselines_zoo/*
+rl_baselines_zoo*
 HIGHLIGHTS/*
 __pycache__
 venv
