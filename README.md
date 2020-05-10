@@ -2,4 +2,4 @@
 
 
 ## Requirements
-RL-Zoo-Baselines: https://github.com/araffin/rl-baselines-zoo
+RL-Zoo-Baselines: https://github.com/araffin/rl-baselines-zoo (currently requires TF version <= 1.4)
