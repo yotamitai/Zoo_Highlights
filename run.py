@@ -1,84 +1,12 @@
 import argparse
 import os
-import pandas as pd
+
+from highlights import create_highlights, get_multiple_highlights
+from tools import make_dirs, find_features_layer
 from rl_baselines_zoo.utils import ALGOS
-from highlights_state_selection import compute_states_importance, highlights
-from get_traces import load_traces, get_traces, load_agent
-from get_trajectories import get_trajectory_images, create_video, trajectories_by_importance, states_to_trajectories
-from tools import make_dirs
+from get_traces import load_agent
 from environments import Evnironments
-
-
-def experiment(kargs):
-    # environments = ['SeaquestNoFrameskip-v4', 'MsPacmanNoFrameskip-v4']
-    algos = ['a2c', 'ppo2', 'acktr', 'dqn']
-    state_importance = ["second", "worst"]
-    trajectory_importance = ["avg", "max_minus_avg", "avg_delta", "max_min", "single_state"]
-    kargs.verbose = False
-
-    print("Starting Experiments:")
-    # for env in environments:
-    #     print(f"\tEnvironment: {env}")
-    for algo in algos:
-        print(f"\t\tAlgorithm: {algo}")
-        kargs.algo = algo
-        for s_i in state_importance:
-            args.load_traces = False  # need to save new trajectories
-            print(f"\t\t\tState Importance: {s_i}")
-            kargs.state_importance = s_i
-            for t_i in trajectory_importance:
-                print(f"\t\t\t\tTrajectory Importance: {t_i}")
-                kargs.trajectory_importance = t_i
-                main(kargs)
-                print(f"\t\t\t\t....Completed")
-                args.load_traces = True  # use saved trajectories
-
-    print("Experiments Completed")
-
-
-def main(params):
-    """load pre-trained agent from RL-Zoo and retrieve execution traces and states"""
-
-    """RL-Zoo"""
-    if params.load_traces:
-        traces, states = load_traces(params)
-    else:
-        traces, states = get_traces(params)
-
-    """HIGHLIGHTS"""
-    data = {
-        'state': list(states.keys()),
-        'q_values': [x.observed_actions for x in states.values()]
-    }
-    q_values_df = pd.DataFrame(data)
-
-    """importance by state"""
-    q_values_df = compute_states_importance(q_values_df, compare_to=params.state_importance)
-    highlights_df = q_values_df
-    state_importance_dict = dict(zip(highlights_df["state"], highlights_df["importance"]))
-
-    """get highlights"""
-    if params.trajectory_importance == "single_state":
-        """highlights importance by single state importance"""
-        summary_states = highlights(highlights_df, traces, params.summary_traj_budget, params.context_length,
-                                    params.minimum_gap)
-        summary_trajectories = states_to_trajectories(summary_states, state_importance_dict)
-    else:
-        """highlights importance by trajectory"""
-        summary_trajectories = trajectories_by_importance(params.trajectory_importance, traces,
-                                                          params.context_length, params.load_traces,
-                                                          params.trajectories_file, state_importance_dict,
-                                                          params.similarity_limit, params.summary_traj_budget)
-    if params.verbose: print('HIGHLIGHTS obtained')
-
-    """make video"""
-    dir_name = os.path.join(params.video_dir, params.algo, params.state_importance +
-                            "_state_importance", params.trajectory_importance)
-    get_trajectory_images(summary_trajectories, states, dir_name)
-    create_video(dir_name)
-    if params.verbose: print("HIGHLIGHTS Video Obtained")
-    return
-
+from agent_comparisons import compare_agents
 
 if __name__ == '__main__':
     # TODO parser args:
@@ -106,10 +34,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     """Model Parameters"""
-    args.env = 'MsPacmanNoFrameskip-v4'  # SeaquestNoFrameskip-v4, MsPacmanNoFrameskip-v4
+    args.env = 'SeaquestNoFrameskip-v4'  # SeaquestNoFrameskip-v4, MsPacmanNoFrameskip-v4
     args.algo = 'acktr'  # 'a2c', 'ppo2' , 'acktr', 'dqn'
-    agents_dir = "rl_baselines_zoo/trained_agents"
-    args.model_path = os.path.join(agents_dir, args.algo, args.env + ".pkl")
     args.stats_path = None
     args.log_dir = None
     args.hyperparams = {}
@@ -123,12 +49,12 @@ if __name__ == '__main__':
 
     """Highlights Parameters"""
     args.summary_traj_budget = 10
-    args.context_length = 20  # must be even number
+    args.context_length = 2 * args.summary_traj_budget  # must be even number
     assert args.context_length % 2 == 0, "The context range of a state must be an even number"
     args.minimum_gap = 10
-    args.trajectory_importance = "avg"  # avg , max_minus_avg, avg_delta, max_min, single_state
+    args.trajectory_importance = "max_min"  # avg , max_minus_avg, avg_delta, max_min, single_state
     args.state_importance = "second"  # worst, second
-    args.similarity_limit = int(args.context_length / 4)
+    args.similarity_limit = 0  # 0 , int(args.context_length / 3)
 
     """Experiment parameters"""
     args.load_traces = False
@@ -145,6 +71,7 @@ if __name__ == '__main__':
     assert args.num_traces < args.random_noop_range
 
     """Directory Parameters"""
+    args.agents_dir = "rl_baselines_zoo/trained_agents"
     args.env_dir = os.path.join("output", args.env)
     args.stt_dir = os.path.join(args.env_dir, "states_traces_trajectories")
     args.video_dir = os.path.join(args.env_dir, "videos")
@@ -161,14 +88,17 @@ if __name__ == '__main__':
     args.rand_step = 0  # not sure if we want this
 
     """RUN"""
-    main(args)
+    # create_highlights(args)
 
-    """EXPERIMENT"""
-    # experiment(args)
+    """MULTIPLE RUNS"""
+    get_multiple_highlights(args)
 
     """LOADING AN AGENT"""
     # environment, agent = load_agent(args)
-    # """features"""
-    # features = find_features_layer(agent)
+    """features"""
+    # features_layer = find_features_layer(agent)
+
+    """LOADING MULTIPLE AGENTS"""
+    compare_agents(args)
 
     print()

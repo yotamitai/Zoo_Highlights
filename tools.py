@@ -64,7 +64,7 @@ def create_video(path):
         clean_dir(video_dir)
     fileList = [path + "/" + x for x in sorted(os.listdir(path))]
     fileList.remove(video_dir)
-    writer = imageio.get_writer(video_dir + "/" + 'video.mp4', fps=20)
+    writer = imageio.get_writer(video_dir + "/" + 'video.mp4', fps=10)
 
     for im in fileList:
         writer.append_data(imageio.imread(im))

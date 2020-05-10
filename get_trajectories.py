@@ -92,7 +92,7 @@ def trajectory_highlights(trajectories, similarity, budget):
     summary = [trajectories[0]]
     for i in range(1, len(trajectories)):
         for t in summary:
-            if len(set(t.states).intersection(trajectories[i].states)) >= similarity:
+            if len(set(t.states).intersection(trajectories[i].states)) > similarity:
                 break
         else:
             summary.append(trajectories[i])

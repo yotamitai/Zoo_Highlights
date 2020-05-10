@@ -5,12 +5,13 @@ from tools import Trace, State, pickle_save, pickle_load, mapped_actions, find_f
 import os
 
 
-def load_agent(params):
+def load_agent(params, specified_algo=False):
+    algo = params.algo if not specified_algo else specified_algo
+    model_path = os.path.join(params.agents_dir, algo, params.env + ".pkl")
     environment = create_test_env(params.env, n_envs=params.n_envs, is_atari=params.is_atari,
-                                  stats_path=params.stats_path,
-                                  seed=0, log_dir=params.log_dir, should_render=not params.no_render,
-                                  hyperparams=params.hyperparams)
-    agent = ALGOS[params.algo].load(params.model_path, env=environment)
+                                  stats_path=params.stats_path, seed=0, log_dir=params.log_dir,
+                                  should_render=not params.no_render, hyperparams=params.hyperparams)
+    agent = ALGOS[algo].load(model_path, env=environment)
     return environment, agent
 
 
@@ -44,7 +45,8 @@ def get_single_trace(model, env, agent_traces, states_dict, features_layer_name,
     trace = Trace()
     obs = env.reset()
     for j in range(args.max_trace_timesteps):
-        state_img = env.render(mode='rgb_array')[args.crop_top:args.crop_bottom]  # crop top to remove "additional life" section
+        state_img = env.render(mode='rgb_array')[
+                    args.crop_top:args.crop_bottom]  # crop top to remove "additional life" section
         state_id = xxhash.xxh64(state_img, seed=0).hexdigest()
 
         if state_id not in states_dict.keys():
