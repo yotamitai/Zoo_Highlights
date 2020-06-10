@@ -45,7 +45,7 @@ if __name__ == '__main__':
     args.verbose = 1
     args.n_envs = 1
     args.is_atari = True
-    args.no_render = False
+    args.no_render = True
 
     """Highlights Parameters"""
     args.summary_traj_budget = 10
@@ -55,6 +55,9 @@ if __name__ == '__main__':
     args.trajectory_importance = "max_min"  # avg , max_minus_avg, avg_delta, max_min, single_state
     args.state_importance = "second"  # worst, second
     args.similarity_limit = 0  # 0 , int(args.context_length / 3)
+
+    "Agent Comparison Parameters"
+    args.important_state_percentage = 0.1
 
     """Experiment parameters"""
     args.load_traces = False
@@ -78,10 +81,10 @@ if __name__ == '__main__':
     make_dirs(args.env_dir)
     make_dirs(args.stt_dir)
     make_dirs(args.video_dir)
-    file_name = str(args.num_traces) + '_' + args.algo + ".pkl"
-    args.traces_file = os.path.join(args.stt_dir, "Traces:" + file_name)
-    args.state_file = os.path.join(args.stt_dir, "States:" + file_name)
-    args.trajectories_file = os.path.join(args.stt_dir, "Trajectories:" + file_name)
+    args.file_name = str(args.num_traces) + ".pkl"
+    args.traces_file = os.path.join(args.stt_dir, args.algo, "Traces:" + args.file_name)
+    args.state_file = os.path.join(args.stt_dir, args.algo, "States:" + args.file_name)
+    args.trajectories_file = os.path.join(args.stt_dir, args.algo, "Trajectories:" + args.file_name)
 
     """Bad Result Experiments"""
     args.map_action_reduction = False  # results are much worse hen True
@@ -91,7 +94,7 @@ if __name__ == '__main__':
     # create_highlights(args)
 
     """MULTIPLE RUNS"""
-    get_multiple_highlights(args)
+    # get_multiple_highlights(args)
 
     """LOADING AN AGENT"""
     # environment, agent = load_agent(args)

@@ -66,6 +66,9 @@ def get_multiple_highlights(args):
     for algo in algos:
         print(f"\t\tAlgorithm: {algo}")
         args.algo = algo
+        args.traces_file = os.path.join(args.stt_dir, args.algo, "Traces:" + args.file_name)
+        args.state_file = os.path.join(args.stt_dir, args.algo, "States:" + args.file_name)
+        args.trajectories_file = os.path.join(args.stt_dir, args.algo, "Trajectories:" + args.file_name)
         for s_i in state_importance:
             args.load_traces = False  # need to save new trajectories
             print(f"\t\t\tState Importance: {s_i}")

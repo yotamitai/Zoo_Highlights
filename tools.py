@@ -39,6 +39,10 @@ def pickle_load(filename):
 
 
 def pickle_save(obj, path):
+    try:
+        os.makedirs(os.path.dirname(path))
+    except:
+        clean_dir(path)
     with open(path, "wb") as file:
         pickle.dump(obj, file)
 
@@ -100,23 +104,24 @@ mapped_actions = {
 }
 
 """Atari env action meaning"""
-# ACTION_MEANING = {
-#     0: "NOOP",
-#     1: "FIRE",
-#     2: "UP",
-#     3: "RIGHT",
-#     4: "LEFT",
-#     5: "DOWN",
-#     6: "UPRIGHT",
-#     7: "UPLEFT",
-#     8: "DOWNRIGHT",
-#     9: "DOWNLEFT",
-#     10: "UPFIRE",
-#     11: "RIGHTFIRE",
-#     12: "LEFTFIRE",
-#     13: "DOWNFIRE",
-#     14: "UPRIGHTFIRE",
-#     15: "UPLEFTFIRE",
-#     16: "DOWNRIGHTFIRE",
-#     17: "DOWNLEFTFIRE",
-# }
+ACTION_MEANING = {
+    0: "NOOP",
+    1: "FIRE",
+    2: "UP",
+    3: "RIGHT",
+    4: "LEFT",
+    5: "DOWN",
+    6: "UPRIGHT",
+    7: "UPLEFT",
+    8: "DOWNRIGHT",
+    9: "DOWNLEFT",
+    10: "UPFIRE",
+    11: "RIGHTFIRE",
+    12: "LEFTFIRE",
+    13: "DOWNFIRE",
+    14: "UPRIGHTFIRE",
+    15: "UPLEFTFIRE",
+    16: "DOWNRIGHTFIRE",
+    17: "DOWNLEFTFIRE",
+}
+
