@@ -1,7 +1,7 @@
 import os
 import datetime
 import imageio
-from tools import clean_dir, pickle_load, pickle_save, create_video
+from utils import clean_dir, pickle_load, pickle_save, create_video
 
 
 class Trajectory(object):

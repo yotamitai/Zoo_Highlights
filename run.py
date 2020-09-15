@@ -2,11 +2,13 @@ import argparse
 import os
 
 from highlights import create_highlights, get_multiple_highlights
-from tools import make_dirs, find_features_layer
+from utils import make_dirs, find_features_layer
 from rl_baselines_zoo.utils import ALGOS
 from get_traces import load_agent
 from environments import Evnironments
 from agent_comparisons import compare_agents
+
+import logging
 
 if __name__ == '__main__':
     # TODO parser args:
@@ -34,7 +36,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     """Model Parameters"""
-    args.env = 'SeaquestNoFrameskip-v4'  # SeaquestNoFrameskip-v4, MsPacmanNoFrameskip-v4
+    args.env = 'MsPacmanNoFrameskip-v4'  # SeaquestNoFrameskip-v4, MsPacmanNoFrameskip-v4
     args.algo = 'acktr'  # 'a2c', 'ppo2' , 'acktr', 'dqn'
     args.stats_path = None
     args.log_dir = None
@@ -91,7 +93,7 @@ if __name__ == '__main__':
     args.rand_step = 0  # not sure if we want this
 
     """RUN"""
-    # create_highlights(args)
+    create_highlights(args)
 
     """MULTIPLE RUNS"""
     # get_multiple_highlights(args)

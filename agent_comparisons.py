@@ -5,7 +5,7 @@ import copy
 from itertools import combinations
 from highlights_state_selection import compute_states_importance
 from rl_baselines_zoo.utils import create_test_env, ALGOS
-from tools import pickle_load, ACTION_MEANING
+from utils import pickle_load, ACTION_MEANING
 
 
 def load_agents_params(params, agents_list):

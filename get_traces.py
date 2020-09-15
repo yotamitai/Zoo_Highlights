@@ -1,7 +1,7 @@
 import random
 import xxhash
 from rl_baselines_zoo.utils import ALGOS, create_test_env
-from tools import Trace, State, pickle_save, pickle_load, mapped_actions, find_features_layer
+from utils import Trace, State, pickle_save, pickle_load, mapped_actions, find_features_layer
 import os
 
 
